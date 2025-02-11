@@ -21,11 +21,11 @@ def embed_watermark(image_path, watermark_text, output_path):
     watermark = np.zeros((h, w), dtype=np.float32)
     text_bits = [int(b) for b in ''.join(f'{ord(c):08b}' for c in watermark_text)]
     
-    # 워터마크를 중간 주파수 영역에 삽입
+    # 워터마크를 이미지 중앙 부근에 삽입하되, 범위를 더 넓게 설정
     for i, bit in enumerate(text_bits):
         x, y = divmod(i, w)
-        if x + 30 < h and y + 30 < w:  # 워터마크를 이미지의 중앙 부근에 삽입
-            watermark[x+30, y+30] = bit * 0  # 워터마크 강도를 조정
+        if x + 50 < h and y + 50 < w:  # 중앙 부근을 넘어 워터마크 삽입 위치 확장
+            watermark[x+50, y+50] = bit * 150  # 워터마크 강도를 150으로 증가
 
     # 워터마크 삽입
     watermarked_dct = dct_img + np.repeat(watermark[:, :, np.newaxis], c, axis=2)
@@ -41,5 +41,6 @@ def embed_watermark(image_path, watermark_text, output_path):
     print(f"Watermarked image saved at {output_path.replace('.jpeg', '.png')}")
 
 
+
 # 테스트
-embed_watermark('/Users/sonjeongmin/watermark/input_image.jpeg', 'SecretMessage', '/Users/sonjeongmin/watermark/watermarked_image.png')
+embed_watermark('/Users/sonjeongmin/watermark/image.png', 'SecretMessage', '/Users/sonjeongmin/watermark/watermarked_image.png')
